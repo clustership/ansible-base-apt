@@ -1,0 +1,27 @@
+---
+#
+# update apt cache. Should be in a common role for dotgee
+#
+
+- name: ensure apt is updated
+  apt: update_cache=yes cache_valid_time=3600
+
+- name: Upgrade apt safely to the latest packages
+  apt: upgrade=safe
+
+- name: Install base packages
+  apt: pkg={{ item }} state=present update_cache=yes cache_valid_time=3600
+  with_items:
+    - aptitude
+    - etckeeper
+    - fail2ban
+    - git
+    - logrotate
+    - logwatch
+    - python
+    - ufw
+    - unattended-upgrades
+
+- name: Adjust APT update intervals
+  copy: src=./files/apt_periodic dest=/etc/apt/apt.conf.d/10periodic
+
